@@ -2,6 +2,7 @@ package com.weakwire.mapviewcluster;
 
 import android.content.Context;
 import android.graphics.*;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
@@ -9,6 +10,7 @@ import com.google.android.maps.Projection;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class CMapView extends MapView {
 
@@ -18,7 +20,7 @@ public class CMapView extends MapView {
     private static final String TAG = "CMapView";
     private MyOverlay overlay = new MyOverlay();
     
-  
+    
 
     public CMapView(final Context context, String apiKey) {
         super(context, apiKey);
@@ -40,7 +42,8 @@ public class CMapView extends MapView {
         return this;
     }
 
-    public void dispatchDraw(Canvas canvas) {
+    @Override
+	public void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
         refreshPoints();
     }
@@ -89,29 +92,39 @@ public class CMapView extends MapView {
             redPaint.setColor(Color.RED);
             textPaint.setColor(Color.WHITE);
             textPaint.setTextSize(15);
+            
         }
 
         @Override
         public boolean draw(Canvas canvas, MapView mapView, boolean shadow, long when) {
             Projection projection = mapView.getProjection();
-            float sizeC;
+            int sizeC = 20;
             for (ClusteredGeoPoint geoPoint : geoPoints) {
                 projection.toPixels(geoPoint, pointC);
                 projection.toPixels(geoPoint.getMainPoint(), pointO);
-                double radius = findDistance(pointC.x, pointC.y, pointO.x, pointO.y);
+                //double radius = findDistance(pointC.x, pointC.y, pointO.x, pointO.y);
                 if (geoPoint.isClustered()) {
-                	solidPaint.setAlpha(50); //50
-                	sizeC = 10 + (float) radius / 2;
-                	if (sizeC > 30) {
-                		sizeC = 30;
+                	solidPaint.setAlpha(200); //50
+                	//sizeC = 10 + (float) radius / 2;                	
+                	//Patch pour limiter la taille du cercle
+
+                	if (geoPoint.getWeight() > 10) {
+                		 sizeC = 20;
+                		solidPaint.setAlpha(50);
                 	}
-                    //canvas.drawCircle(pointC.x, pointC.y, 10 + (float) radius / 2, solidPaint);
-                    canvas.drawCircle(pointC.x, pointC.y, sizeC, solidPaint);
-                    canvas.drawText(geoPoint.getWeight() + "", pointC.x, pointC.y, textPaint);
+                	
+               
+                	solidPaint.setAlpha(50);
+                   canvas.drawCircle(pointC.x, pointC.y, sizeC, solidPaint);
+                	//canvas.drawCircle(pointC.x, pointC.y, 20+geoPoint.getWeight(), solidPaint);
+                   canvas.drawText(""+geoPoint.getWeight(), pointC.x, pointC.y, textPaint);
+                   
                 } else {
-                    solidPaint.setAlpha(100); //255
+                	
+                	
+                    solidPaint.setAlpha(200); //255
                     canvas.drawCircle(pointC.x, pointC.y, 7, solidPaint);
-                    //canvas.drawCircle(pointC.x, pointC.y, 10 + (float) radius / 2, solidPaint);
+            
                 }
             }
             return super.draw(canvas, mapView, shadow, when);

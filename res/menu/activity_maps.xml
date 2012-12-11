@@ -1,4 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+<item android:id="@+id/update"
+        android:title="Update database"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+
+
 <item android:id="@+id/maposition"
         android:title="Ma position"
         android:orderInCategory="100"

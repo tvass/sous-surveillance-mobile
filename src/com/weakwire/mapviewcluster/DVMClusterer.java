@@ -1,5 +1,6 @@
 package com.weakwire.mapviewcluster;
 
+
 import android.util.Log;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;

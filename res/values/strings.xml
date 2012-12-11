@@ -1,6 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">sous-surveillance-mobile</string>
     <string name="title_activity_maps">Sous-Surveillance.net</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_maps_large">MapsLargeActivity</string>
 
 </resources>

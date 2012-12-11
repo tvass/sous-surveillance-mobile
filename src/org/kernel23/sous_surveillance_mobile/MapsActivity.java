@@ -1,110 +1,74 @@
 package org.kernel23.sous_surveillance_mobile;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
-import com.google.android.maps.MyLocationOverlay;
-import com.weakwire.mapviewcluster.CMapView;
+import com.google.android.maps.MapView;
+import com.google.android.maps.Overlay;
+import com.google.android.maps.OverlayItem;
 
 public class MapsActivity extends MapActivity {
 	
+	private MapView mapView;
 	private MapController mc;
-	private MyLocationOverlay myLocationOverlay ;
+	private ProgressBar mProgressBar;
+	
+	public class MapOverlay extends com.google.android.maps.Overlay {
+
+		public MapOverlay() {
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public boolean onTouchEvent(MotionEvent event, MapView mapView) 
+	    {   
+	        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+	        	UpdateMarkersOnMap(null);	
+	        }                            
+	        return false;
+	    }    
+	}
 	
 	List<GeoPoint> geoPoints = new ArrayList<GeoPoint>();
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CMapView mapView = new CMapView(this, "---API KEY HERE ---");
-        setContentView(mapView);
-        
-        
+        setContentView(R.layout.activity_maps);
+        mapView = (MapView) findViewById(R.id.mapView);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar1);
         mc = mapView.getController();
         
-        myLocationOverlay = new MyLocationOverlay(this, mapView);
-        mapView.getOverlays().add(myLocationOverlay);
+        getCurrentLocation(); 
+        
+        MapOverlay mapOverlay = new MapOverlay();
+        List<Overlay> listOfOverlays = mapView.getOverlays();
+        listOfOverlays.clear();
+        listOfOverlays.add(mapOverlay);
+                
         mapView.postInvalidate();
-        myLocationOverlay.enableCompass();
-        myLocationOverlay.enableMyLocation();
-        myLocationOverlay.runOnFirstFix(new Runnable() {
-            public void run() {
-        	mc.animateTo(myLocationOverlay.getMyLocation()); 	
-        	mc.setZoom(16);
-            }
-        });
-    
         mapView.setClickable(true);
-        mapView.setBuiltInZoomControls(false);
+        mapView.setBuiltInZoomControls(true);
         
-        InputStream inputStream = getResources().openRawResource(R.raw.sous_surveillance_gps_database);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        getCurrentLocation();
+        UpdateMarkersOnMap(null);
         
-        String myStr = "";
-        int in;
+        mapView.invalidate();
         
-        try {
-        	in = inputStream.read();
-        	while (in != -1)
-        	{
-        		byteArrayOutputStream.write(in);
-        		in = inputStream.read();
-        	}
-        	inputStream.close();
-        	myStr = byteArrayOutputStream.toString();
-        }catch (IOException e) {
-        	   // TODO Auto-generated catch block
-        	   e.printStackTrace();
-        	  }
-        
-
-        JSONObject fullJObj;
-        JSONObject  geoJson;
-        JSONArray coordJson; 
-        
-		try {
-			fullJObj = new JSONObject(myStr);
-	        JSONArray jArr = fullJObj.getJSONArray("features");
-	        for (int i = 0; i < jArr.length(); ++i ) {
-	            JSONObject jObj = jArr.getJSONObject(i);
-	            
-	            String geometry = jObj.getString("geometry");	    	    
-	    	    geoJson = new JSONObject(geometry);
-	    	    coordJson = geoJson.getJSONArray("coordinates");
-	    	    
-	    	    String mylong = coordJson.getString(1);
-	    	    String mylat  = coordJson.getString(0);
-	    	    
-	    	    
-	    		Double myLat = Double.parseDouble(mylong);
-   				Double myLong = Double.parseDouble(mylat);
-   				GeoPoint geopoint = new GeoPoint((int)(myLat*1E6), (int)(myLong*1E6));
-   				
-   				geoPoints.add(geopoint);
-   				
-	        }
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		mapView.setPoints(geoPoints).setMaxPoints(40);
-		
+        CheckLocalDB();
     }
 
     @Override
@@ -118,9 +82,93 @@ public class MapsActivity extends MapActivity {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 	
-	  @Override
+	public void getCurrentLocation(){   
+		   
+		}
+	
+	void UpdateMarkersOnMap(GeoPoint p) {
+		if(p == null) {
+			p = mapView.getMapCenter();
+		}
+		
+    	double mylat =  p.getLatitudeE6() / 1E6;
+    	String mylatString = Double.toString(mylat);
+    	double mylong = p.getLongitudeE6() /1E6;
+    	String mylongString = Double.toString(mylong);
+
+		List<Camera> cameraList = new ArrayList<Camera>();
+		CameraBDD cameraDB = new CameraBDD(this);
+	    cameraDB.read();		
+		cameraList=cameraDB.getCameraFromArea(mylatString, mylongString);
+	    cameraDB.close();
+	    
+        Drawable drawable = this.getResources().getDrawable(R.drawable.cctv);
+        PoiItemizedOverlay itemizedoverlay = new PoiItemizedOverlay(drawable,this);    
+
+        for(Camera mycamera : cameraList )
+        {
+	    	String mylatmarker = mycamera.getLatitude();
+		    String mylongmarker = mycamera.getLongitude(); 
+		    Double myLat = Double.parseDouble(mylatmarker);
+			Double myLong = Double.parseDouble(mylongmarker);
+			GeoPoint geopoint = new GeoPoint((int)(myLat*1E6), (int)(myLong*1E6));
+   			OverlayItem overlayitem = new OverlayItem(geopoint, mycamera.getSsid(), null);
+   			itemizedoverlay.addOverlay(overlayitem);
+        }
+        List<Overlay> listOfOverlays = mapView.getOverlays();
+        listOfOverlays.clear();
+                
+        if(itemizedoverlay.size() > 0) {
+        	listOfOverlays.add(itemizedoverlay);
+        }
+        MapOverlay mapOverlay = new MapOverlay();
+        listOfOverlays.add(mapOverlay);
+                      
+	    mapView.invalidate();	    
+	   	}
+	
+	public void CheckLocalDB() {
+		int total;
+		CameraBDD cameraDB = new CameraBDD(this);
+	    cameraDB.read();		
+	    total=cameraDB.getTotalCamera();
+	    cameraDB.close();
+	    if(total == 0) {
+	    	 AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+
+	    	 builder.setTitle("INFORMATIONS");
+	    	 builder.setMessage("Aucune caméra en base. Voulez vous mettre à jour ?");
+
+	    	 builder.setPositiveButton("OUI", new DialogInterface.OnClickListener() {
+
+	    	     public void onClick(DialogInterface dialog, int which) {
+	 				 UpdateFromWeb myupdate = new UpdateFromWeb(getApplicationContext(),MapsActivity.this.mProgressBar);
+					 myupdate.execute();
+	    	    	 dialog.dismiss();
+	    	     }
+
+	    	 });
+
+	    	 builder.setNegativeButton("NON", new DialogInterface.OnClickListener() {
+
+	    	     @Override
+	    	     public void onClick(DialogInterface dialog, int which) {
+	    	         // I do not need any action here you might
+	    	         dialog.dismiss();
+	    	     }
+	    	 });
+
+	    	 //alert = builder.create();
+	    	 builder.show();
+	    	
+	    	
+	    }else{
+	    	Toast.makeText(MapsActivity.this, "Vous avez "+total+" caméras référencées en base.",Toast.LENGTH_LONG).show();
+	    }
+	}
+	
+	@Override
 	    public boolean onOptionsItemSelected(MenuItem item) {
 		  
 		  		float lat;
@@ -129,8 +177,38 @@ public class MapsActivity extends MapActivity {
 		  		GeoPoint gp;
 		  
 			switch (item.getItemId()) {
+			
+			case R.id.update:
+				 AlertDialog.Builder builder = new AlertDialog.Builder(MapsActivity.this);
+
+		    	 builder.setTitle("INFORMATIONS");
+		    	 builder.setMessage("Voulez vous mettre à jour votre base de données ?");
+
+		    	 builder.setPositiveButton("OUI", new DialogInterface.OnClickListener() {
+
+		    	     public void onClick(DialogInterface dialog, int which) {
+		    	    	 UpdateFromWeb myupdate = new UpdateFromWeb(getApplicationContext(),mProgressBar);
+		 				 myupdate.execute();
+		    	    	 dialog.dismiss();
+		    	     }
+
+		    	 });
+
+		    	 builder.setNegativeButton("NON", new DialogInterface.OnClickListener() {
+
+		    	     @Override
+		    	     public void onClick(DialogInterface dialog, int which) {
+		    	         // I do not need any action here you might
+		    	         dialog.dismiss();
+		    	     }
+		    	 });
+
+		    	 //alert = builder.create();
+		    	 builder.show();
+				return true;
+				
 	        case R.id.maposition:
-	        	mc.animateTo(myLocationOverlay.getMyLocation()); 
+	        	//mc.animateTo(myLocationOverlay.getMyLocation()); 
 	        	mc.setZoom(16);
 	            return true;
 
@@ -141,6 +219,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;		            
 	        
 	        case R.id.blois:
@@ -150,6 +229,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;	
 	            
 	        case R.id.bourges:
@@ -159,6 +239,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;		            
 
 	        case R.id.clermontferrand:
@@ -168,6 +249,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;		            
 
 	        case R.id.dijon:
@@ -177,6 +259,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;		            
 
 	        case R.id.luxembourg:
@@ -186,6 +269,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;	
 	            
 	        case R.id.lyon:
@@ -195,6 +279,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;
 
 	        case R.id.marseille:
@@ -204,6 +289,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;		            
 
 	        case R.id.nimes:
@@ -213,6 +299,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;	
 	            
 	        case R.id.paris:
@@ -222,6 +309,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;	            
 
 	        case R.id.rennes:
@@ -231,6 +319,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;	
 	            
 	        case R.id.toulouse:
@@ -240,6 +329,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;	            
 
 	        case R.id.tours:
@@ -249,6 +339,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;	
 
 	        case R.id.troyes:
@@ -258,6 +349,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;	
 
 	        case R.id.valdisere:
@@ -267,6 +359,7 @@ public class MapsActivity extends MapActivity {
 	        	gp = new GeoPoint((int)(lat * 1E6), (int)(lng * 1E6));
 	        	Toast.makeText(MapsActivity.this, "Direction "+ville,Toast.LENGTH_LONG).show();
 	        	mc.animateTo(gp);
+	        	UpdateMarkersOnMap(gp);
 	            return true;		            
 	            
 	        default:
