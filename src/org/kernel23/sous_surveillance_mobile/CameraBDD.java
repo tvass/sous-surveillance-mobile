@@ -1,6 +1,5 @@
 package org.kernel23.sous_surveillance_mobile;
 
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -2,8 +2,6 @@ package org.kernel23.sous_surveillance_mobile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,14 +46,10 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 	protected Void doInBackground(Void... arg0) {
 		
 		
-		int progress;
-		for (progress=0;progress<=100;progress++)
-		{
-			for (int i=0; i<1000000; i++){}
-			//la méthode publishProgress met à jour l'interface en invoquant la méthode onProgressUpdate
-			publishProgress(progress);
-			progress++;				
-		}	
+		int progress= 0;
+		publishProgress(progress);
+		
+		
 		
 		String fileName = "SousSurveillance-update.txt";
 		String surveillanceDir = "/sous-surveillance-update/";
@@ -64,11 +58,11 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 		  * Téléchargement du dernier fichier
 		  */		
 		
-		/*
+		
 		
 		
 		// EN COURS DE DEV 
-		
+		/*
 		try {
 
 			URL url = new URL("http://lyon.sous-surveillance.net/spip.php?page=cameras&format=json&details=2");
@@ -106,17 +100,22 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 		
 		
 		 File file = mContext.getFileStreamPath(Environment.getExternalStorageDirectory()+ surveillanceDir + fileName);
+		 */
+		
+		
+		 /*
 		 if(file.exists()){
 			 try {
 				File f=new File(Environment.getExternalStorageDirectory()+ surveillanceDir + fileName);
-				inputStream = new FileInputStream(f);
+			//	inputStream = new FileInputStream(f);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 		 }
-		 
 		 */
+		 
 		 
 
 		 InputStream inputStream = mContext.getResources().openRawResource(R.raw.sous_surveillance_gps_database);

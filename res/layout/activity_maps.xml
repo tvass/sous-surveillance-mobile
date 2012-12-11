@@ -2,13 +2,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-  
-     <com.google.android.maps.MapView     
-        android:id="@+id/mapView"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:apiKey="---- API KEY ----"
-        android:clickable="true"/>
+
+     <com.google.android.maps.MapView
+         android:id="@+id/mapView"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content"
+         android:layout_alignParentLeft="true"
+         android:layout_alignParentTop="true"
+         android:apiKey="---- MAPS API KEY HERE ----"
+         android:clickable="true" >
+     </com.google.android.maps.MapView>
 
      <ProgressBar
          android:id="@+id/progressBar1"
@@ -17,6 +20,7 @@
          android:layout_height="wrap_content"
          android:layout_alignParentBottom="true"
          android:layout_alignParentLeft="true"
-         android:layout_alignParentRight="true"/>
+         android:layout_alignParentRight="true"
+         android:layout_marginBottom="15dp" />
      
 </RelativeLayout>

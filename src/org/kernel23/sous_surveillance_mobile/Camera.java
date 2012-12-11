@@ -5,6 +5,7 @@ public class Camera {
 	private String 	latitude;
 	private String 	longitude; 
 
+	@Override
 	public String toString ( ){
 		return this.ssid+" "+this.latitude+" "+this.longitude;
 	}

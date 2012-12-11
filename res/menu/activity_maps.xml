@@ -11,15 +11,15 @@
         android:orderInCategory="100"
         android:showAsAction="never" />
     
-<item android:id="@+id/option" 
+<item android:id="@+id/option"
       android:title="Villes">
 
-<menu android:id="@+id/sousmenu">    
+<menu android:id="@+id/sousmenu">
         
     <item android:id="@+id/angers"
         android:title="Angers"
         android:orderInCategory="100"
-        android:showAsAction="never" />    
+        android:showAsAction="never" />
 
     <item android:id="@+id/blois"
         android:title="Blois"
@@ -35,17 +35,17 @@
     <item android:id="@+id/clermontferrand"
         android:title="Clermont Ferrand"
         android:orderInCategory="100"
-        android:showAsAction="never" />       
+        android:showAsAction="never" />
 
     <item android:id="@+id/dijon"
         android:title="Dijon"
         android:orderInCategory="100"
-        android:showAsAction="never" />        
+        android:showAsAction="never" />
     
     <item android:id="@+id/luxembourg"
         android:title="Luxembourg"
         android:orderInCategory="100"
-        android:showAsAction="never" />    
+        android:showAsAction="never" />
     
     <item android:id="@+id/lyon"
         android:title="Lyon"
@@ -56,12 +56,12 @@
     <item android:id="@+id/marseille"
         android:title="Marseille"
         android:orderInCategory="100"
-        android:showAsAction="never" />     
+        android:showAsAction="never" />
     
     <item android:id="@+id/nimes"
         android:title="Nîmes"
         android:orderInCategory="100"
-        android:showAsAction="never" />    
+        android:showAsAction="never" />
     
     <item android:id="@+id/paris"
         android:title="Paris"
@@ -91,7 +91,7 @@
         <item android:id="@+id/valdisere"
         android:title="Val d'Isère"
         android:orderInCategory="100"
-        android:showAsAction="never" />        
+        android:showAsAction="never" />
         
     </menu>
 </item>

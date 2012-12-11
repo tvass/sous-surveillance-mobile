@@ -1,6 +1,7 @@
 package org.kernel23.sous_surveillance_mobile;
 
 import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,19 +29,19 @@ public class PoiItemizedOverlay extends ItemizedOverlay<OverlayItem>
  	 populate();
  }
  
- @Override
+@Override
  protected OverlayItem createItem(int i)
  {
 	 return mOverlays.get(i);
  }
  
- @Override
+@Override
  public int size()
  {
 	 return mOverlays.size();
  }
  
- @Override
+@Override
  protected boolean onTap(int index)
  {
 	 OverlayItem item = mOverlays.get(index);
@@ -52,7 +53,8 @@ public class PoiItemizedOverlay extends ItemizedOverlay<OverlayItem>
 
 	 builder.setPositiveButton("OUI", new DialogInterface.OnClickListener() {
 
-	     public void onClick(DialogInterface dialog, int which) {
+	     @Override
+		public void onClick(DialogInterface dialog, int which) {
 	    	 Uri uri = Uri.parse("http://lyon.sous-surveillance.net/?camera"+ssid );
         	 mContext.startActivity(new Intent(Intent.ACTION_VIEW, uri));
 	         dialog.dismiss();

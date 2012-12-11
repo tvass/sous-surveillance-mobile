@@ -28,6 +28,7 @@ public class MapsActivity extends MapActivity {
 	
 	public class MapOverlay extends com.google.android.maps.Overlay {
 
+		
 		public MapOverlay() {
 			// TODO Auto-generated constructor stub
 		}
@@ -142,7 +143,8 @@ public class MapsActivity extends MapActivity {
 
 	    	 builder.setPositiveButton("OUI", new DialogInterface.OnClickListener() {
 
-	    	     public void onClick(DialogInterface dialog, int which) {
+	    	     @Override
+				public void onClick(DialogInterface dialog, int which) {
 	 				 UpdateFromWeb myupdate = new UpdateFromWeb(getApplicationContext(),MapsActivity.this.mProgressBar);
 					 myupdate.execute();
 	    	    	 dialog.dismiss();
@@ -186,7 +188,8 @@ public class MapsActivity extends MapActivity {
 
 		    	 builder.setPositiveButton("OUI", new DialogInterface.OnClickListener() {
 
-		    	     public void onClick(DialogInterface dialog, int which) {
+		    	     @Override
+					public void onClick(DialogInterface dialog, int which) {
 		    	    	 UpdateFromWeb myupdate = new UpdateFromWeb(getApplicationContext(),mProgressBar);
 		 				 myupdate.execute();
 		    	    	 dialog.dismiss();
