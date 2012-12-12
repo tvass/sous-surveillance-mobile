@@ -1,98 +1,79 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
 <item android:id="@+id/update"
-        android:title="Update database"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:title="Mise à jour"
+        android:orderInCategory="100" />
 
 
 <item android:id="@+id/maposition"
         android:title="Ma position"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
     
 <item android:id="@+id/option"
       android:title="Villes">
 
-<menu android:id="@+id/sousmenu">
-        
+<menu android:id="@+id/sousmenu">       
     <item android:id="@+id/angers"
         android:title="Angers"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
 
     <item android:id="@+id/blois"
         android:title="Blois"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
     
     <item android:id="@+id/bourges"
         android:title="Bourges"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
     
 
     <item android:id="@+id/clermontferrand"
         android:title="Clermont Ferrand"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
 
     <item android:id="@+id/dijon"
         android:title="Dijon"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
     
     <item android:id="@+id/luxembourg"
         android:title="Luxembourg"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
     
     <item android:id="@+id/lyon"
         android:title="Lyon"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
 
 
     <item android:id="@+id/marseille"
         android:title="Marseille"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
     
     <item android:id="@+id/nimes"
         android:title="Nîmes"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
     
     <item android:id="@+id/paris"
         android:title="Paris"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
     
     <item android:id="@+id/rennes"
         android:title="Rennes"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
     
-        <item android:id="@+id/toulouse"
+    <item android:id="@+id/toulouse"
         android:title="Toulouse"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
 
-        <item android:id="@+id/tours"
+    <item android:id="@+id/tours"
         android:title="Tours"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
         
-        <item android:id="@+id/troyes"
+    <item android:id="@+id/troyes"
         android:title="Troyes"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
+        android:orderInCategory="100" />
 
-        <item android:id="@+id/valdisere"
+    <item android:id="@+id/valdisere"
         android:title="Val d'Isère"
-        android:orderInCategory="100"
-        android:showAsAction="never" />
-        
-    </menu>
+        android:orderInCategory="100" />      
+</menu>
 </item>
 </menu>

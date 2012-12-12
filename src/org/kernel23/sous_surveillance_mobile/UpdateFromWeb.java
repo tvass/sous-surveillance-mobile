@@ -15,6 +15,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -33,7 +34,7 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 	protected void onPreExecute() {
 		super.onPreExecute();
 		Toast.makeText(mContext, "Téléchargement et mise à jour de base de données en arrière plan.\n\nCeci peut prendre plusieurs minutes et ralentir votre mobile.",Toast.LENGTH_LONG).show();
-		
+		mProgressBar.setVisibility(View.VISIBLE);
 	}
 
 	protected Void doInBackground(Void... arg0) {
@@ -197,5 +198,6 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 	@Override
 	protected void onPostExecute(Void result) {
 		 Toast.makeText(this.mContext, "Mise à jour terminée.",Toast.LENGTH_LONG).show();
+		 mProgressBar.setVisibility(View.GONE);
 	}
 }
