@@ -36,20 +36,9 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 		
 	}
 
-	@Override
-	protected void onProgressUpdate(Integer... values){
-		super.onProgressUpdate(values);
-		mProgressBar.setProgress(values[0]);
-	}
-
-	@Override
 	protected Void doInBackground(Void... arg0) {
-		
-		
-		int progress= 0;
-		publishProgress(progress);
-		
-		
+
+		long total = 0;
 		
 		String fileName = "SousSurveillance-update.txt";
 		String surveillanceDir = "/sous-surveillance-update/";
@@ -57,9 +46,6 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 		 /*
 		  * Téléchargement du dernier fichier
 		  */		
-		
-		
-		
 		
 		// EN COURS DE DEV 
 		/*
@@ -72,7 +58,7 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 			c.connect();
 
 			int lengthOfFile = c.getContentLength();
-
+			
 			String PATH = Environment.getExternalStorageDirectory() + surveillanceDir ;
 			File file = new File(PATH);
 			file.mkdirs();
@@ -86,9 +72,12 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 			byte[] buffer = new byte[1024];
 			int len1 = 0;
 			while ((len1 = is.read(buffer)) != -1) {
+				fos.write(buffer, 0, len1);
+				total += len1;
+		        
 
-			fos.write(buffer, 0, len1);
 			}
+			fos.flush();
 			fos.close();
 			is.close();
 
@@ -98,9 +87,9 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 
 			
 		
-		
-		 File file = mContext.getFileStreamPath(Environment.getExternalStorageDirectory()+ surveillanceDir + fileName);
-		 */
+		*/
+		 //File file = mContext.getFileStreamPath(Environment.getExternalStorageDirectory()+ surveillanceDir + fileName);
+		 
 		
 		
 		 /*
@@ -134,6 +123,7 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 	     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 	        	
 	        int in;
+	        int progress;
 	        String myStr = "";
 	        try {
 	        	in = inputStream.read();
@@ -181,23 +171,31 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 		   	     	camera.setSsid(id_camera);
 		   	     	cameraDB.insertCamera(camera);
 	
+	   				
+	   				progress = (count*100/jArr.length());
 	   				count++;
+	   				publishProgress(progress);
+	   				
 		        }
 		  }catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 		 }
 	     
-	     //    
 	     cameraDB.close();
-	     publishProgress(0);
 			
 		return null;
 	}
 
 	@Override
+	protected void onProgressUpdate(Integer... progress){
+		//
+		//super.onProgressUpdate( progress[0]); 
+		mProgressBar.setProgress( progress[0]);
+	}
+	
+	@Override
 	protected void onPostExecute(Void result) {
 		 Toast.makeText(this.mContext, "Mise à jour terminée.",Toast.LENGTH_LONG).show();
 	}
-
 }
