@@ -1,5 +1,13 @@
 package org.kernel23.sous_surveillance_mobile;
 
+/*
+ * Mise à jour via le site ...
+ * 
+ * #1 - Téléchargement du fichier
+ * #2 - Mise à jour de la base locale
+ * 
+ */
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -15,6 +23,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -83,7 +92,7 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 			is.close();
 
 			} catch (IOException e) {
-			e.printStackTrace();
+			Log.e("UpdateFromWeb", "IOException", e);
 			}
 
 			
@@ -100,13 +109,17 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 			//	inputStream = new FileInputStream(f);
 			} catch (FileNotFoundException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("UpdateFromWeb", "IOException", e);
 			}
 			
 		 }
 		 */
 		 
 		 
+		 /*
+		  * Le fichier suivant simule le flux Web.
+		  * http://lyon.sous-surveillance.net/spip.php?page=cameras&format=json
+		  */
 
 		 InputStream inputStream = mContext.getResources().openRawResource(R.raw.sous_surveillance_gps_database);
 		
@@ -136,8 +149,16 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 	        	inputStream.close();
 	        	myStr = byteArrayOutputStream.toString();
 	        }catch (IOException e) {
-	        	   // TODO Auto-generated catch block
-	        	   e.printStackTrace();
+	        		Log.e("UpdateFromWeb", "IOException", e);
+	        }
+	        finally{
+	            try {
+	            	if(inputStream !=null){
+	            		inputStream.close();
+	                     }
+	            } catch (IOException e) {
+	            	Log.e("UpdateFromWeb", "Erreur lors de la fermeture du fichier de données", e);
+	           }
 	        }
 	        //
 	        
@@ -179,9 +200,9 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 	   				
 		        }
 		  }catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			  	Log.e("UpdateFromWeb", "JSONException", e);
 		 }
+		 
 	     
 	     cameraDB.close();
 			
@@ -190,8 +211,6 @@ public class UpdateFromWeb extends AsyncTask<Void, Integer, Void>{
 
 	@Override
 	protected void onProgressUpdate(Integer... progress){
-		//
-		//super.onProgressUpdate( progress[0]); 
 		mProgressBar.setProgress( progress[0]);
 	}
 	

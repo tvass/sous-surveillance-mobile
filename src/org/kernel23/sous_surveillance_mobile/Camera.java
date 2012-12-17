@@ -1,5 +1,8 @@
 package org.kernel23.sous_surveillance_mobile;
-
+/*
+ * Camera : Reste à implémenter apparence, direction, angle ...
+ * 
+ */
 public class Camera {
 	private String	ssid;
 	private String 	latitude;

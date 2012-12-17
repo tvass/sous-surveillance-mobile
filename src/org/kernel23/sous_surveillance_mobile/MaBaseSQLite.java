@@ -1,5 +1,10 @@
 package org.kernel23.sous_surveillance_mobile;
 
+/*
+ * Contient les fonctions de création ou mise à jour de la base de données.
+ * 
+ */
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;

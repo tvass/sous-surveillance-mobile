@@ -1,5 +1,9 @@
 package org.kernel23.sous_surveillance_mobile;
-
+/*
+ * Contient toutes les fonctions pour gérer les caméras dans la
+ * base de données locales.
+ * 
+ */
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +69,12 @@ public class CameraBDD {
 		
 	}
 	
+
+	/*
+	 * Retourne une List<Camera> contenant les 150 entrées les plus proches
+	 * des coordonnées passés en argument.   
+	 * 
+	 */
 	
 	public  List<Camera> getCameraFromArea(String current_latitude, String current_longitude){
 		List<Camera> cameraList = new ArrayList<Camera>();
@@ -85,6 +95,11 @@ public class CameraBDD {
 	    }
 	    return cameraList;	
 	}
+	
+	/* 
+	 * Retourne toutes les caméras en base de données.
+	 * 
+	 */
 	
 	public  List<Camera> getAllCamera(){
 		List<Camera> cameraList = new ArrayList<Camera>();

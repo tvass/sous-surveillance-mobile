@@ -1,10 +1,16 @@
 package org.kernel23.sous_surveillance_mobile;
 
+/*
+ * Ecran principal de l'application
+ */
+
+
 import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
@@ -36,6 +42,10 @@ public class MapsActivity extends MapActivity {
 		@Override
 		public boolean onTouchEvent(MotionEvent event, MapView mapView) 
 	    {   
+			/*
+			 *  Mise à jour des markers après un mouvement de la carte
+			 *  sur le tactile.
+			 */
 	        if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
 	        	UpdateMarkersOnMap(null);	
 	        }                            
@@ -88,6 +98,12 @@ public class MapsActivity extends MapActivity {
 		   
 		}
 	
+	/*
+	 * Fonction de mise à jour des markers.
+	 * Utilisation des coordonnées du centre de la carte 
+	 * pour calculer les points à proximité.
+	 */
+	
 	void UpdateMarkersOnMap(GeoPoint p) {
 		if(p == null) {
 			p = mapView.getMapCenter();
@@ -129,6 +145,13 @@ public class MapsActivity extends MapActivity {
 	    mapView.invalidate();	    
 	   	}
 	
+	
+	/*
+	 * Vérifie si nous avons des caméras en base.
+	 * Si négatif, propose de se mettre à jour.
+	 * Lancé un démarrage de l'appli.
+	 */
+	
 	public void CheckLocalDB() {
 		int total;
 		CameraBDD cameraDB = new CameraBDD(this);
@@ -169,6 +192,12 @@ public class MapsActivity extends MapActivity {
 	    	Toast.makeText(MapsActivity.this, "Vous avez "+total+" caméras référencées en base.",Toast.LENGTH_LONG).show();
 	    }
 	}
+	
+	
+	/*
+	 * Switch/case pour la gestion du menu contextuel. 
+	 */
+	
 	
 	@Override
 	    public boolean onOptionsItemSelected(MenuItem item) {
@@ -215,6 +244,14 @@ public class MapsActivity extends MapActivity {
 	        	mc.setZoom(16);
 	            return true;
 
+	            
+	        case R.id.share:
+	        	Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT,"text to share");
+                startActivity(Intent.createChooser(sharingIntent, "File is now cleaned. Share image with ..."));
+                return true;
+	            
 	        case R.id.angers:
 	        	lat = 47.473612f;
 	        	lng = -0.554167f;

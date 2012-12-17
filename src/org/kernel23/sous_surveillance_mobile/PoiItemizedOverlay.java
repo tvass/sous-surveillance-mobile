@@ -1,5 +1,11 @@
 package org.kernel23.sous_surveillance_mobile;
 
+/*
+ * Class PoiItemizedOverlay
+ * Contient les méthodes pour les markers sur la carte.
+ * 
+ */
+
 import java.util.ArrayList;
 
 import android.app.AlertDialog;
@@ -41,6 +47,13 @@ public class PoiItemizedOverlay extends ItemizedOverlay<OverlayItem>
 	 return mOverlays.size();
  }
  
+
+/*
+ * Régle le comportement lors d'un clic (tap) sur
+ * un marker.
+ * 
+ */
+
 @Override
  protected boolean onTap(int index)
  {
